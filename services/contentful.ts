@@ -7,9 +7,10 @@ const client = createClient({
 });
 
 export const getHeroEntries = () => {
-  // @ts-ignore
   return client.getEntries({
     content_type: 'hero',
+    include: 10,
+    // @ts-ignore
     'metadata.tags.sys.id[in]': 'baseline',
   });
 };
