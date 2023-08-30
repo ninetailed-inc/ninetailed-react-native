@@ -1,19 +1,12 @@
 import React from 'react';
-import {Image, StyleSheet, Text, FlatList} from 'react-native';
+import {Image, StyleSheet, Text, FlatList, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {parseExperiences} from '../lib/experiences';
-import {Experience} from '@ninetailed/experience.js-react';
+import {useExperience, Experience} from '@ninetailed/experience.js-react';
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 24,
-  },
-  blogPost: {
-    marginBottom: 28,
-  },
-  coverImage: {
-    marginBottom: 16,
+  hero: {
+    marginTop: 28,
   },
   image: {
     height: 100,
@@ -24,40 +17,43 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginBottom: 8,
   },
-  excerpt: {
-    fontSize: 16,
-    color: 'grey',
-  },
 });
 
-function Hero({item}) {
+function Hero({entry}) {
   return (
-    <>
-      <Text style={styles.title}>{item.fields.internalName}</Text>
+    <View style={styles.hero}>
+      <Text style={styles.title}>{entry.fields.internalName}</Text>
       <Image
         style={styles.image}
-        source={{uri: `https:${item.fields.image.fields.file.url}`}}
+        source={{uri: `https:${entry.fields.image.fields.file.url}`}}
       />
-    </>
+    </View>
   );
 }
 
-// TODO: Change <Experience> to not use divs
+function HeroExperienceWrapper({item}) {
+  return <HeroExperience item={item} />;
+}
+
 function HeroExperience({item}) {
-  console.log('item', item);
-  const parsedExperiences = parseExperiences(item);
-  console.log('experiences', parsedExperiences);
-  return (
-    <Experience
-      item={item}
-      id={item.sys.id}
-      experiences={parsedExperiences}
-      component={Hero}
-    />
-  );
+  const baseline = {
+    ...item,
+    id: item.sys.id,
+  };
+  const {loading, variant} = useExperience({
+    baseline,
+    experiences: parseExperiences(item),
+  });
+  if (loading) {
+    return <Text>Loading...</Text>;
+  }
+  if (variant) {
+    return <Hero entry={variant} />;
+  }
+  return <Hero entry={baseline} />;
 }
 
-export default function HeroPostList({entries}) {
+export default function HeroList({entries}) {
   return (
     <SafeAreaView>
       <Text>
@@ -67,7 +63,7 @@ export default function HeroPostList({entries}) {
       <FlatList
         data={entries}
         keyExtractor={item => item.sys.id}
-        renderItem={Hero}
+        renderItem={HeroExperienceWrapper}
       />
     </SafeAreaView>
   );

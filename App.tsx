@@ -24,14 +24,14 @@ export default function App() {
           },
         };
       },
-      // @ts-ignore
-      onLog: (...args) => {
-        console.log(...args);
-      },
-      // @ts-ignore
-      onError: (...args) => {
-        console.error(...args);
-      },
+      // // @ts-ignore
+      // onLog: (...args) => {
+      //   console.log(...args);
+      // },
+      // // @ts-ignore
+      // onError: (...args) => {
+      //   console.error(...args);
+      // },
     });
   }, []);
   return (

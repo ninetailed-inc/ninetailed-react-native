@@ -22,15 +22,6 @@ export const parseExperiences = (entry: singularBlock) => {
   return hasExperiences(entry)
     ? entry.fields.nt_experiences
         .filter(experience => ExperienceMapper.isExperienceEntry(experience))
-        .map(experience =>
-          ExperienceMapper.mapCustomExperience(experience, variant => {
-            return {
-              id: variant.sys.id,
-              item: {
-                ...variant,
-              },
-            };
-          }),
-        )
+        .map(experience => ExperienceMapper.mapExperience(experience))
     : [];
 };
